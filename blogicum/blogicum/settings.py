@@ -36,7 +36,6 @@ ALLOWED_HOSTS = [
 INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'pages.apps.PagesConfig',
-    'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,12 +131,19 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static_dev',
 ]
 
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# filebased.EmailBackend:
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+
+EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
+CSRF_FAILURE_VIEW = 'pages.views.csrf_failure'
 
-handler404 = 'core.views.page_not_found' 
-handler500 = 'core.views.server_failure' 
+LOGIN_REDIRECT_URL = 'blog:index'
+LOGIN_URL = 'login'

@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from blog.querysets import PublishedQuerySet
+from blog.querysets import DatePubQuerySet
 
 User = get_user_model()
 
@@ -64,9 +64,7 @@ class Post(BaseModel):
         max_length=256,
         verbose_name='Заголовок'
     )
-    text = models.TextField(
-        verbose_name='Текст'
-    )
+    text = models.TextField(verbose_name='Текст')
     pub_date = models.DateTimeField(
         verbose_name='Дата и время публикации',
         help_text='Если установить дату и время в будущем — '
@@ -90,13 +88,34 @@ class Post(BaseModel):
         null=True,
         verbose_name='Категория'
     )
-    objects = PublishedQuerySet.as_manager()
+    image = models.ImageField(
+        verbose_name='Фото',
+        upload_to='posts_images',
+        blank=True
+    )
+    objects = DatePubQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
-        ordering = tuple(['-pub_date'])
+        ordering = ('-pub_date',)
         default_related_name = 'posts'
 
     def __str__(self):
         return self.title
+
+
+class Comment(models.Model):
+    text = models.TextField('Текст комментария')
+    post_cur = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'комментарий'
+        verbose_name_plural = 'Комментарии'
+        ordering = ('created_at',)
