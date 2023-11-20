@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.db.models import Count
 
 
 class DatePubQuerySet(models.query.QuerySet):
@@ -11,3 +12,7 @@ class DatePubQuerySet(models.query.QuerySet):
             is_published=True,
             category__is_published=True
         )
+
+    def comm_count(self):
+        return self.annotate(
+            comment_count=Count('comments')).order_by('-pub_date')

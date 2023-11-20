@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import include, path
 
 from . import views
 
@@ -14,19 +14,12 @@ urlpatterns = [
         'profile/<int:pk>/edit/',
         views.ProfileUpdateView.as_view(), name='edit_profile'
     ),
-    path(
-        'posts/<int:pk>/',
-        views.PostDetailView.as_view(), name='post_detail'
-    ),
+    path('posts/<int:pk>/', include([
+        path('', views.PostDetailView.as_view(), name='post_detail'),
+        path('edit/', views.PostUpdateView.as_view(), name='edit_post'),
+        path('delete/', views.PostDeleteView.as_view(), name='delete_post')
+    ])),
     path('posts/create/', views.PostCreateView.as_view(), name='create_post'),
-    path(
-        'posts/<int:pk>/edit/',
-        views.PostUpdateView.as_view(), name='edit_post'
-    ),
-    path(
-        'posts/<int:pk>/delete/',
-        views.PostDeleteView.as_view(), name='delete_post'
-    ),
     path(
         'category/<slug:category_slug>/',
         views.CategoryPostsListView.as_view(), name='category_posts'

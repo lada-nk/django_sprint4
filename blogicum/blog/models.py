@@ -7,6 +7,16 @@ User = get_user_model()
 
 
 class BaseModel(models.Model):
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Добавлено'
+    )
+
+    class Meta:
+        abstract = True
+
+
+class BasePostModel(BaseModel):
     is_published = models.BooleanField(
         default=True,
         verbose_name='Опубликовано',
@@ -21,7 +31,7 @@ class BaseModel(models.Model):
         abstract = True
 
 
-class Category(BaseModel):
+class Category(BasePostModel):
     title = models.CharField(
         max_length=256,
         verbose_name='Заголовок'
@@ -45,7 +55,7 @@ class Category(BaseModel):
         return self.title
 
 
-class Location(BaseModel):
+class Location(BasePostModel):
     name = models.CharField(
         max_length=256,
         verbose_name='Название места'
@@ -59,7 +69,7 @@ class Location(BaseModel):
         return self.name
 
 
-class Post(BaseModel):
+class Post(BasePostModel):
     title = models.CharField(
         max_length=256,
         verbose_name='Заголовок'
@@ -94,6 +104,7 @@ class Post(BaseModel):
         blank=True
     )
     objects = DatePubQuerySet.as_manager()
+    object = DatePubQuerySet.as_manager()
 
     class Meta:
         verbose_name = 'публикация'
@@ -105,14 +116,14 @@ class Post(BaseModel):
         return self.title
 
 
-class Comment(models.Model):
+class Comment(BaseModel):
     text = models.TextField('Текст комментария')
     post_cur = models.ForeignKey(
         Post,
         on_delete=models.CASCADE,
         related_name='comments',
+        verbose_name='Пост'
     )
-    created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     class Meta:

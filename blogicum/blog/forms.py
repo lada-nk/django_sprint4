@@ -9,7 +9,7 @@ class PostForm(forms.ModelForm):
         model = Post
         exclude = ('author',)
         widgets = {
-            'pub_date': forms.DateInput(attrs={'type': 'date'})
+            'pub_date': forms.DateTimeInput(attrs={'type': 'datetime-local'})
         }
 
 
@@ -27,7 +27,7 @@ class UserUpdateForm(forms.ModelForm):
         fields = ('username', 'email', 'first_name', 'last_name')
 
     def clean_email(self):
-        """Проверка email на уникальность"""
+        """Проверка email на уникальность."""
         email = self.cleaned_data.get('email')
         username = self.cleaned_data.get('username')
         if email and User.objects.filter(
