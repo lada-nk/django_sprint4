@@ -40,16 +40,11 @@ class PostCreateView(PostMixin, PostFormMixin, CreateView):
         return super().form_valid(form)
 
 
-class PostDeleteView(
-    PostMixin, AuthorCheck,
-    LoginRequiredMixin, DeleteView
-):
+class PostDeleteView(PostMixin, AuthorCheck, DeleteView):
     pass
 
 
-class PostUpdateView(
-    PostMixin, PostFormMixin, AuthorCheck, UpdateView
-):
+class PostUpdateView(PostMixin, PostFormMixin, AuthorCheck, UpdateView):
 
     def handle_no_permission(self):
         post_detail_url = reverse(
@@ -64,9 +59,7 @@ class PostUpdateView(
         )
 
 
-class CommentCreateView(
-    CommentMixin, CommentFormMixin, CreateView
-):
+class CommentCreateView(CommentMixin, CommentFormMixin, CreateView):
     model = Post
     post_cur = None
 
@@ -76,9 +69,7 @@ class CommentCreateView(
         return super().form_valid(form)
 
 
-class CommentUpdateView(
-    CommentFormMixin, AuthorCheck, UpdateView
-):
+class CommentUpdateView(CommentFormMixin, AuthorCheck, UpdateView):
     model = Comment
     template_name = 'blog/comment.html'
     pk_url_kwarg = 'comment_id'
@@ -90,9 +81,7 @@ class CommentUpdateView(
         )
 
 
-class CommentDeleteView(
-    CommentMixin, AuthorCheck, DeleteView
-):
+class CommentDeleteView(CommentMixin, AuthorCheck, DeleteView):
     pk_url_kwarg = 'comment_id'
 
 
