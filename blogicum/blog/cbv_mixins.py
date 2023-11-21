@@ -20,20 +20,13 @@ class PostFormMixin:
     form_class = PostForm
 
 
-class PostUserCheck(UserPassesTestMixin):
-
-    def test_func(self):
-        post = self.get_object()
-        return bool(self.request.user == post.author)
-
-
 class CommentMixin(LoginRequiredMixin):
     model = Comment
     template_name = 'blog/comment.html'
 
     def get_success_url(self):
         return reverse(
-            'blog:post_detail', kwargs={'pk': self.kwargs['pk']}
+            'blog:post_detail', kwargs={'pk': self.kwargs[self.pk_url_kwarg]}
         )
 
 
@@ -41,11 +34,16 @@ class CommentFormMixin:
     form_class = CommentForm
 
 
-class CommentUserCheck(UserPassesTestMixin):
+class AuthorCheck(UserPassesTestMixin):
 
     def test_func(self):
-        comment = self.get_object()
-        return bool(self.request.user == comment.author)
+        return bool(self.request.user == self.get_object().author)
+
+
+class UserCheck(UserPassesTestMixin):
+
+    def test_func(self):
+        return bool(self.request.user == self.get_object())
 
 
 class PaginateByListView(ListView):
