@@ -18,10 +18,11 @@ class PostDetailView(DetailView):
     template_name = 'blog/detail.html'
 
     def get_queryset(self):
+        base_queryset = Post.objects.all()
         if self.request.user != self.get_object(
-                queryset=Post.objects.all()).author:
-            return Post.objects.all().date_pub_filter()
-        return Post.objects.all()
+                queryset=base_queryset).author:
+            return base_queryset.date_pub_filter()
+        return base_queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -49,6 +50,7 @@ class PostDeleteView(
 class PostUpdateView(
     PostMixin, PostFormMixin, AuthorCheck, UpdateView
 ):
+
     def handle_no_permission(self):
         post_detail_url = reverse(
             'blog:post_detail', kwargs={'pk': self.kwargs[self.pk_url_kwarg]}
@@ -130,9 +132,10 @@ class ProfileListView(SingleObjectMixin, PaginateByListView):
         return context
 
     def get_queryset(self):
+        base_queryset = self.object.posts.comm_count()
         if self.request.user != self.object:
-            return self.object.posts.comm_count().date_pub_filter()
-        return self.object.posts.comm_count().all()
+            return base_queryset.date_pub_filter()
+        return base_queryset.comm_count().all()
 
 
 class CategoryPostsListView(SingleObjectMixin, PaginateByListView):
