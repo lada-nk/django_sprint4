@@ -10,7 +10,7 @@ from blog.models import User, Post, Category, Comment
 from blog.forms import CommentForm, UserUpdateForm
 from blog.cbv_mixins import (
     PostMixin, PostFormMixin, CommentMixin, CommentFormMixin,
-    UserCheck, AuthorCheck, PaginateByListView
+    UserCheck, AuthorCheck, CommentCheck, PaginateByListView
 )
 
 
@@ -59,7 +59,9 @@ class PostUpdateView(PostMixin, PostFormMixin, AuthorCheck, UpdateView):
         )
 
 
-class CommentCreateView(CommentMixin, CommentFormMixin, CreateView):
+class CommentCreateView(
+    CommentMixin, CommentFormMixin, CommentCheck, CreateView
+):
     model = Post
     post_cur = None
 

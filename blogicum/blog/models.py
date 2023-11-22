@@ -22,6 +22,7 @@ class BasePostModel(BaseModel):
         verbose_name='Опубликовано',
         help_text='Снимите галочку, чтобы скрыть публикацию.'
     )
+    # это и есть абстрактная модель
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Добавлено'
@@ -124,7 +125,10 @@ class Comment(BaseModel):
         related_name='comments',
         verbose_name='Пост'
     )
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Автор')
 
     class Meta:
         verbose_name = 'комментарий'
